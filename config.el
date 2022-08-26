@@ -26,11 +26,11 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 ;; (setq doom-theme 'doom-one) // Default theme
-(setq doom-theme 'doom-rouge)
+(setq doom-theme 'doom-city-lights)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory "")
+(setq org-directory "~/org/")
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -63,3 +63,68 @@
          ("<tab>" . 'copilot-accept-completion)
          ("TAB" . 'copilot-accept-completion)))
 
+;; Config for org-roam
+(after! org
+        (setq org-roam-directory "~/Personal/roam")
+)
+
+; Config for org-journal
+(setq org-journal-dir "~/Personal/journal"
+      org-journal-date-prefix "#+TITLE: "
+      org-journal-date-format "%a, %Y %m %d"
+      org-journal-file-format "%Y-%m-%d.org"
+)
+;; Smudge Settings
+(setq smudge-oauth2-client-secret "a7b9633280864a0ea56854fd35c2af1b")
+(setq smudge-oauth2-client-id "5cd793ea75864cd3ae42e7fbc16c3cda")
+
+(use-package! websocket
+    :after org-roam)
+
+;; org-roam-ui
+(use-package! org-roam-ui
+    :after org-roam ;; or :after org
+;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+;;         a hookable mode anymore, you're advised to pick something yourself
+;;         if you don't care about startup time, use
+;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+
+;; Fix org-roam messing with dired-mode
+;; (add-hook 'dired-mode-hook
+;;           (lambda ()
+;;             (org-roam-mode 0)
+;;             ))
+
+(beacon-mode 1)
+
+;; Fira code font
+(setq doom-font (font-spec :family "Fira Code" :size 12 :weight 'medium))
+(after! doom-theme
+  (setq doom-themes-enable-bold t)
+  (setq doom-themes-enable-italic t))
+(custom-set-faces!
+  '(font-lock-comment-face :slant italic))
+
+(emms-all)
+(emms-default-players)
+(nyan-mode)
+(after! nyan-mode
+  (nyan-start-animation)
+  (setq nyan-animate-nyancat t)
+  (setq nyan-bar-length 20)
+  (setq nyan-minimum-window-width 101))
+
+(setq doom-modeline-major-mode-icon t)
+(setq doom-modeline-major-mode-color-icon t)
+
+(define-key evil-normal-state-map (kbd "[r") 'parrot-rotate-prev-word-at-point)
+(define-key evil-normal-state-map (kbd "]r") 'parrot-rotate-next-word-at-point)
+
+(setq zone-timer (run-with-idle-timer 180 t 'zone))
+
+;; (setq +format-with-lsp nil)
