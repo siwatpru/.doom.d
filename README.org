@@ -2,6 +2,9 @@
 #+description: This is my doom emacs config in org-mode
 #+property: header-args :tangle config.el
 
+This is the main configuration file for my Doom Emacs. Run ~org-bable-tangle~ to
+convert code blocks into ~config.el~ file
+
 Place your private configuration here! Remember, you do not need to run ~doom sync~
 after modifying this file!
 
