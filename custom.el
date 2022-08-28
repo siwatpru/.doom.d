@@ -15,7 +15,7 @@
  '(jdee-db-spec-breakpoint-face-colors (cons "#1B2229" "#3f444a"))
  '(minimap-mode nil t)
  '(objed-cursor-color "#ea3d54")
- '(package-selected-packages '(leetcode beacon))
+ '(package-selected-packages '(smudge f org-roam-ui exec-path-from-shell beacon))
  '(pdf-view-midnight-colors (cons "#cbccd1" "#1c1d20"))
  '(rustic-ansi-faces
    ["#1c1d20" "#ea3d54" "#78bd65" "#fedd38" "#4fb3d8" "#b978ab" "#4fb3d8" "#cbccd1"])

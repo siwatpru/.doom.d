@@ -52,3 +52,20 @@
 
 (package! copilot
   :recipe (:host github :repo "zerolfx/copilot.el" :files ("*.el" "dist")))
+
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
+
+(package! smudge)
+
+(unpin! org-roam)
+(package! org-roam-ui)
+
+(package! dirvish)
+(package! beacon)
+
+(package! emms)
+(package! smooth-scrolling)
+(package! nyan-mode)
+(package! parrot)
+(package! gnuplot)
