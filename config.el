@@ -159,3 +159,9 @@
   :load-path "site-lisp/org-auto-tangle/"    ;; this line is necessary only if you cloned the repo in your site-lisp directory
   :defer t
   :hook (org-mode . org-auto-tangle-mode))
+
+(after! centaur-tabs
+    (centaur-tabs-group-by-projectile-project)
+    (add-hook 'dired-mode-hook 'centaur-tabs-local-mode)
+    (add-hook 'magit-mode-hook 'centaur-tabs-local-mode)
+    (centaur-tabs-change-fonts "Roboto Mono" 120))

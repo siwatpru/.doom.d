@@ -29,6 +29,7 @@ after modifying this file!
 - [[#emms][Emms]]
 - [[#astro-config][Astro config]]
 - [[#auto-tangle][Auto tangle]]
+- [[#centaur-tab-config][Centaur-tab config]]
 
 * Set user information
 Some functionality uses this to identify you, e.g. GPG configuration, email
@@ -302,4 +303,14 @@ Automatically tangle org file mode when save
   :load-path "site-lisp/org-auto-tangle/"    ;; this line is necessary only if you cloned the repo in your site-lisp directory
   :defer t
   :hook (org-mode . org-auto-tangle-mode))
+#+end_src
+
+* Centaur-tab config
+
+#+begin_src emacs-lisp :noeval
+(after! centaur-tabs
+    (centaur-tabs-group-by-projectile-project)
+    (add-hook 'dired-mode-hook 'centaur-tabs-local-mode)
+    (add-hook 'magit-mode-hook 'centaur-tabs-local-mode)
+    (centaur-tabs-change-fonts "Roboto Mono" 120))
 #+end_src
