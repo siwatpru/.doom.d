@@ -67,5 +67,7 @@
 (package! emms)
 (package! smooth-scrolling)
 (package! nyan-mode)
-(package! parrot)
 (package! gnuplot)
+
+(package! parrot)
+(package! org-auto-tangle)

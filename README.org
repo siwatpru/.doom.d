@@ -1,6 +1,7 @@
 #+title: Config
 #+description: This is my doom emacs config in org-mode
 #+property: header-args :tangle config.el
+#+auto_tangle: t
 
 This is the main configuration file for my Doom Emacs. Run ~org-bable-tangle~ to
 convert code blocks into ~config.el~ file
@@ -8,7 +9,7 @@ convert code blocks into ~config.el~ file
 Place your private configuration here! Remember, you do not need to run ~doom sync~
 after modifying this file!
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :noeval
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 #+end_src
 
@@ -16,6 +17,7 @@ after modifying this file!
 - [[#set-user-information][Set user information]]
 - [[#set-doom-theme][Set doom theme]]
 - [[#set-font][Set font]]
+- [[#ligatures-extra-setting][Ligatures Extra setting]]
 - [[#doom-editor-config][Doom editor config]]
 - [[#config-for-org-mode][Config for org-mode]]
 - [[#config-for-org-roam][Config for org-roam]]
@@ -25,12 +27,14 @@ after modifying this file!
 - [[#beacon-mode][Beacon mode]]
 - [[#doom-modeline][Doom-modeline]]
 - [[#emms][Emms]]
+- [[#astro-config][Astro config]]
+- [[#auto-tangle][Auto tangle]]
 
 * Set user information
 Some functionality uses this to identify you, e.g. GPG configuration, email
 clients, file templates and snippets.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :noeval
 (setq user-full-name "Siwat Pruksapanya"
       user-mail-address "siwat.pru@gmail.com")
 #+end_src
@@ -40,9 +44,10 @@ There are two ways to load a theme. Both assume the theme is installed and
 available. You can either set `doom-theme' or manually load a theme with
 the ~load-theme~ function.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :noeval
 ;; (setq doom-theme 'doom-one) // Default theme
-(setq doom-theme 'doom-city-lights)
+;; (setq doom-theme 'doom-city-lights)
+(setq doom-theme 'doom-nord-light)
 #+end_src
 
 * Set font
@@ -59,21 +64,70 @@ font string. You generally only need these two:
 (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
       doom-variable-pitch-font (font-spec :family "sans" :size 13))
 
-#+begin_src emacs-lisp
-(setq doom-font (font-spec :family "Fira Code" :size 12 :weight 'medium))
+#+begin_src emacs-lisp :noeval
+
 (after! doom-theme
   (setq doom-themes-enable-bold t)
   (setq doom-themes-enable-italic t))
 (custom-set-faces!
   '(font-lock-comment-face :slant italic))
+
+(set-face-attribute 'default nil
+                    :family "Roboto Mono" :weight 'light :height 120)
+(set-face-attribute 'bold nil
+                    :family "Roboto Mono" :weight 'regular)
+(set-face-attribute 'italic nil
+                    :family "Roboto Mono" :weight 'semilight :slant 'italic)
+(set-fontset-font t 'unicode
+    (font-spec :name "Inconsolata Light" :size 14) nil)
+(set-fontset-font t '(#xe000 . #xffdd)
+    (font-spec :name "RobotoMono Nerd Font" :size 10) nil)
+
+;; (setq doom-font (font-spec :family "FiraCode Nerd Font" :size 12 :weight 'medium))
+#+end_src
+
+* Ligatures Extra setting
+Remove some of the extra ligatures from python set
+
+#+begin_src emacs-lisp
+;; you don't need to include all of them you can pick and mix
+(setq! +ligatures-extra-symbols
+  '(;; org
+  :name          "»"
+  :src_block     "»"
+  :src_block_end "«"
+  :quote         "“"
+  :quote_end     "”"
+  ;; Functional
+  :lambda        "λ"
+  :def           "ƒ"
+  :composition   "∘"
+  :map           "↦"
+  ;; Flow
+  :not           "￢"
+  :in            "∈"
+  :not-in        "∉"
+  :and           "∧"
+  :or            "∨"
+  :for           "∀"
+  :some          "∃"
+  :return        "⟼"
+  :yield         "⟻"
+  ;; Other
+  :union         "⋃"
+  :intersect     "∩"
+  :diff          "∖"
+  :tuple         "⨂"
+  :dot           "•"))
 #+end_src
 
 * Doom editor config
 This determines the style of line numbers in effect. If set to ~nil~, line
 numbers are disabled. For relative line numbers, set this to ~relative~.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :noeval
 (setq display-line-numbers-type t)
+(setq doom-themes-neotree-file-icons t)
 #+end_src
 
 Here are some additional functions/macros that could help you configure Doom:
@@ -96,10 +150,9 @@ they are implemented.
 If you use *org* and don't want your org files in the default location below,
 change ~org-directory~. It must be set before org loads!
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :noeval
 (after! org
-  (setq org-directory "~/org/")
-  (setq org-agenda-files "~/org/agenda.org"))
+  (setq org-directory "~/org/"))
 (use-package! org-roam-ui
     :after org-roam
     :config
@@ -111,7 +164,7 @@ change ~org-directory~. It must be set before org loads!
 
 Hook for ~auto-fill~ after org-mode
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :noeval
 (add-hook 'org-mode-hook 'turn-on-auto-fill)
 #+end_src
 
@@ -119,43 +172,45 @@ Hook for ~auto-fill~ after org-mode
 Set directory for org-roam and config node type and search display
 This is a setup based on [[https://jethrokuan.github.io/org-roam-guide/][How I Take Notes with Org-roam]].
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :noeval
 (after! org
-        (setq org-roam-directory "~/Personal/roam"))
+    (setq org-roam-directory "~/Personal/roam"))
 
-(setq org-roam-capture-templates
-      '(("m" "main" plain "%?"
-         :if-new (file+head "main/${slug}.org"
+(use-package org-roam
+    :config
+    (setq org-roam-capture-templates
+        '(("m" "main" plain "%?"
+            :if-new (file+head "main/${slug}.org"
+                                "#+title: ${title}\n")
+            :immediate-finish t
+            :unnarrowed t)
+            ("r" "reference" plain "%?"
+            :if-new(file+head "reference/${title}.org"
                             "#+title: ${title}\n")
-         :immediate-finish t
-         :unnarrowed t)
-        ("r" "reference" plain "%?"
-         :if-new(file+head "reference/${title}.org"
-                           "#+title: ${title}\n")
-         :immediate-finish t
-         :unnarrowed t)
-        ("n" "note" plain "%?"
-         :if-new(file+head "note/${title}.org"
-                           "#+title: ${title}\n")
-         :immediate-finish t
-         :unnarrowed t)
-        ("a" "artile" plain "%?"
-         :if-new (file+head "articles/${title}.org"
-                            "#+title: ${title}\n#+filetags: :article:\n")
-         :immediate-finish t
-         :unnarrowed t)))
+            :immediate-finish t
+            :unnarrowed t)
+            ("n" "note" plain "%?"
+            :if-new(file+head "note/${title}.org"
+                            "#+title: ${title}\n")
+            :immediate-finish t
+            :unnarrowed t)
+            ("a" "artile" plain "%?"
+            :if-new (file+head "articles/${title}.org"
+                                "#+title: ${title}\n#+filetags: :article:\n")
+            :immediate-finish t
+            :unnarrowed t)))
 
-(cl-defmethod org-roam-node-type ((node org-roam-node))
-  "Return the TYPE of NODE."
-  (condition-case nil
-      (file-name-nondirectory
-       (directory-file-name
-        (file-name-directory
-         (file-relative-name (org-roam-node-file node) org-roam-directory))))
-    (error "")))
+    (cl-defmethod org-roam-node-type ((node org-roam-node))
+    "Return the TYPE of NODE."
+    (condition-case nil
+        (file-name-nondirectory
+        (directory-file-name
+            (file-name-directory
+            (file-relative-name (org-roam-node-file node) org-roam-directory))))
+        (error "")))
 
-(setq org-roam-node-display-template
-      (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+    (setq org-roam-node-display-template
+        (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag))))
 
 (use-package! websocket
     :after org-roam)
@@ -164,18 +219,19 @@ This is a setup based on [[https://jethrokuan.github.io/org-roam-guide/][How I T
 * Config for org-journal
 Set journal directory and naming format
 
-#+begin_src emacs-lisp
-(setq org-journal-dir "~/Personal/journal"
-      org-journal-date-prefix "#+TITLE: "
-      org-journal-date-format "%a, %Y %m %d"
-      org-journal-file-format "%Y-%m-%d.org"
-)
+#+begin_src emacs-lisp :noeval
+(after! org-journal
+    (setq org-journal-dir "~/Personal/journal"
+        org-journal-date-prefix "#+TITLE: "
+        org-journal-date-format "%a, %Y %m %d"
+        org-journal-file-format "%Y-%m-%d.org"
+))
 #+end_src
 
 * Github's copilot
 Accept completion from copilot and fallback to company
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :noeval
 (use-package! copilot
   :hook (prog-mode . copilot-mode)
   :bind (("C-TAB" . 'copilot-accept-completion-by-word)
@@ -188,7 +244,7 @@ Accept completion from copilot and fallback to company
 * Spotify mode
 Because why not?
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :noeval
 (setq smudge-oauth2-client-secret "a7b9633280864a0ea56854fd35c2af1b")
 (setq smudge-oauth2-client-id "5cd793ea75864cd3ae42e7fbc16c3cda")
 #+end_src
@@ -196,36 +252,54 @@ Because why not?
 * Beacon mode
 This makes the cursor easier to find when doing jumps
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :noeval
 (beacon-mode 1)
 #+end_src
 
 * Doom-modeline
-
 This section is a config for doom-modeline aka the line below the buffer with
 all goodies. Including all related stuff. NYAN!!
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :noeval
 (nyan-mode)
 (after! nyan-mode
   (nyan-start-animation)
   (setq nyan-animate-nyancat t)
   (setq nyan-bar-length 20)
   (setq nyan-minimum-window-width 101))
+
 (setq doom-modeline-major-mode-icon t)
 (setq doom-modeline-major-mode-color-icon t)
 
 ;; Config for parrot
-(define-key evil-normal-state-map (kbd "[r") 'parrot-rotate-prev-word-at-point)
-(define-key evil-normal-state-map (kbd "]r") 'parrot-rotate-next-word-at-point)
+;; (define-key evil-normal-state-map (kbd "[r") 'parrot-rotate-prev-word-at-point)
+;; (define-key evil-normal-state-map (kbd "]r") 'parrot-rotate-next-word-at-point)
+;; (parrot-mode)
 #+end_src
 
 * Emms
-
 Play all the shit in emacs
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :noeval
 (emms-all)
 (emms-default-players)
 #+end_src
 
+* Astro config
+There is no better way to support [[https://astro.build][Astro]] on Emacs ATM, so just do this for now
+
+#+begin_src emacs-lisp :noeval
+(setq auto-mode-alist
+    (append '((".*\\.astro\\'" . js-jsx-mode))
+        auto-mode-alist))
+#+end_src
+
+* Auto tangle
+Automatically tangle org file mode when save
+
+#+begin_src emacs-lisp :noeval
+(use-package org-auto-tangle
+  :load-path "site-lisp/org-auto-tangle/"    ;; this line is necessary only if you cloned the repo in your site-lisp directory
+  :defer t
+  :hook (org-mode . org-auto-tangle-mode))
+#+end_src
